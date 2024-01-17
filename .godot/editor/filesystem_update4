@@ -1,4 +1,13 @@
+res://dummy.tscn
 res://main.tscn
 res://arena.tscn
-res://dummy.tscn
 res://Player/player.tscn
+res://dummy-chara.tscn
+res://New Dude.tscn
+res://Scripts/MoveSetManager.gd
+res://Scripts/PlayerMovementScript.gd
+res://AIScript.gd
+res://Scripts/dummy.gd
+res://HUD-Elements.tscn
+res://HUD-Elements/HUDManager.gd
+res://HUD-Elements/HitBodyDetectionScript.gd

@@ -1,10 +1,11 @@
 [gd_scene load_steps=64 format=3 uid="uid://by220son0gqwh"]
 
-[ext_resource type="PackedScene" uid="uid://dxew0jd0dc218" path="res://dummy.tscn" id="1_f0jx5"]
 [ext_resource type="PackedScene" uid="uid://b0fyfix8wtv51" path="res://Player/player.tscn" id="1_md8qx"]
-[ext_resource type="Texture2D" uid="uid://cjkdloo6itqg4" path="res://dummy.png" id="1_oca73"]
 [ext_resource type="Texture2D" uid="uid://bkltlem0ug12s" path="res://Sprites/output-onlinegiftools.png" id="3_x3jqn"]
 [ext_resource type="Script" path="res://Scripts/Countdown.gd" id="5_u11if"]
+[ext_resource type="PackedScene" uid="uid://fcpcw37b7sp7" path="res://dummy-chara.tscn" id="6_bi231"]
+[ext_resource type="PackedScene" uid="uid://5dd0wfvjlfgi" path="res://HUD-Elements.tscn" id="6_d2dv8"]
+[ext_resource type="Script" path="res://AIScript.gd" id="7_dc7g0"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_8cd40"]
 size = Vector2(1146.5, 147)
@@ -439,22 +440,16 @@ _data = {
 "monday": SubResource("Animation_0be7d")
 }
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_ibvxc"]
-size = Vector2(193.125, 272)
-
 [node name="Arena" type="Node2D"]
-
-[node name="Dummy" parent="." instance=ExtResource("1_f0jx5")]
-position = Vector2(908, 448)
 
 [node name="Label" type="Label" parent="."]
 offset_left = 416.0
-offset_top = 86.0
+offset_top = 198.0
 offset_right = 761.0
-offset_bottom = 112.0
+offset_bottom = 224.0
 text = "IMAGINEZ UN SUPER ARRIERE PLAN D'ARENE"
 
-[node name="CharacterBody2D" parent="." instance=ExtResource("1_md8qx")]
+[node name="player" parent="." instance=ExtResource("1_md8qx")]
 position = Vector2(239, 423)
 
 [node name="StaticBody2D" type="StaticBody2D" parent="."]
@@ -475,6 +470,7 @@ shape = SubResource("RectangleShape2D_3rxtl")
 [node name="ParallaxBackground" type="ParallaxBackground" parent="."]
 
 [node name="Monday" type="AnimatedSprite2D" parent="ParallaxBackground"]
+visible = false
 position = Vector2(579, 255)
 sprite_frames = SubResource("SpriteFrames_6he0g")
 frame = 1
@@ -486,18 +482,6 @@ libraries = {
 }
 
 [node name="ParallaxLayer" type="ParallaxLayer" parent="ParallaxBackground"]
-
-[node name="Dummy2" type="CharacterBody2D" parent="."]
-visible = false
-
-[node name="Sprite2D" type="Sprite2D" parent="Dummy2"]
-position = Vector2(908, 452)
-scale = Vector2(0.510695, 0.510695)
-texture = ExtResource("1_oca73")
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Dummy2"]
-position = Vector2(905, 456)
-shape = SubResource("RectangleShape2D_ibvxc")
 
 [node name="Countdown" type="Control" parent="."]
 layout_mode = 3
@@ -514,12 +498,24 @@ one_shot = true
 
 [node name="Seconds" type="Label" parent="Countdown"]
 layout_mode = 0
-offset_left = -11.0
-offset_top = 20.0
-offset_right = 80.0
-offset_bottom = 66.0
+offset_left = -10.0
+offset_top = 137.0
+offset_right = 81.0
+offset_bottom = 183.0
 theme_override_font_sizes/font_size = 30
 text = "00"
 horizontal_alignment = 2
+
+[node name="Dummy Char" parent="." instance=ExtResource("6_bi231")]
+position = Vector2(945, 447)
+script = ExtResource("7_dc7g0")
+offsetTillFlip = 20
+AIMovementSpeed = -80
+
+[node name="HUD Elements" parent="." instance=ExtResource("6_d2dv8")]
+offset_left = 489.0
+offset_top = 116.0
+offset_right = 493.0
+offset_bottom = 119.0
 
 [connection signal="timeout" from="Countdown/Timer" to="Countdown" method="_on_timer_timeout"]

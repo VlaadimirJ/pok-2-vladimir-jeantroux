@@ -1,0 +1,182 @@
+[gd_scene load_steps=7 format=3 uid="uid://5dd0wfvjlfgi"]
+
+[ext_resource type="Texture2D" uid="uid://bqrhr77ytfd1q" path="res://HUD-Elements/KO-Bar.png" id="8"]
+[ext_resource type="Texture2D" uid="uid://b46aac41lasym" path="res://HUD-Elements/whitesquare.png" id="9"]
+[ext_resource type="Texture2D" uid="uid://dackmmw42riiu" path="res://HUD-Elements/Names/P1_Ryu.png" id="11"]
+[ext_resource type="Texture2D" uid="uid://s8twt8g1256c" path="res://HUD-Elements/Names/P2_EHonda.png" id="13"]
+[ext_resource type="Texture2D" uid="uid://c33bwxrqsgvtp" path="res://HUD-Elements/Numbers/n9.png" id="14"]
+
+[sub_resource type="GDScript" id="GDScript_eybky"]
+script/source = "extends Control
+
+@onready var player1HealthBar = get_node(\"KO-bar Holder/Player1Health\") # Healthbar Player 1
+@onready var player2HealthBar = get_node(\"KO-bar Holder/Player2Health\") # Healthbar Player 2
+
+var oneSeconds = 9  # second number in the timer represented as 1x this amount
+var tenSeconds = 9 # first number in the timer represented as 10x this amount
+var resetOnes = true # allow the reset of the units to happen if this lowers than 0
+
+@onready var timer = get_node(\"Time Holder/Timer\")
+@onready var oneSprite = get_node(\"Time Holder/1s\")
+@onready var tenSprite = get_node(\"Time Holder/10s\")
+
+@export var timeSprites : Array # An Array filled with images of the numbers 0 to 9
+
+@export var namesP1 : Array# Images of the character name P1
+@export var namesP2 : Array# Images of the character name P2
+
+@onready var playerName1 = get_node(\"player\")
+@onready var playerName2 = get_node(\"Dummy Char\")
+
+func UpdateHealth(fromPlayerHealth, damage):
+	if(fromPlayerHealth):
+		player1HealthBar.value -= damage
+		if(player1HealthBar.value <= 0):
+			GameOver()
+	else:
+		player2HealthBar.value -= damage
+		if(player2HealthBar.value <= 0):
+			GameOver()
+
+func _on_Timer_timeout():
+	oneSeconds -= 1
+	
+	if(oneSeconds < 0):
+		if(resetOnes):
+			oneSeconds = 9
+			tenSeconds -= 1
+		else:
+			oneSeconds = 0
+			timer.stop()
+			GameOver()
+		
+		if(tenSeconds == 0):
+			tenSeconds = 0
+			resetOnes = false
+
+	oneSprite.texture = timeSprites[oneSeconds]
+	tenSprite.texture = timeSprites[tenSeconds]
+	
+	timer.wait_time = 1
+
+func UpdateNameElements(player1ID, player2ID):
+	playerName1.texture = namesP1[player1ID]
+	playerName2.texture = namesP2[player2ID]
+
+func GameOver():
+	pass
+"
+
+[node name="HUD Elements" type="Control"]
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+grow_horizontal = 2
+grow_vertical = 2
+script = SubResource("GDScript_eybky")
+timeSprites = [null, null, null, null, null, null, null, null, null, null]
+
+[node name="KO-bar Holder" type="Control" parent="."]
+anchors_preset = 0
+anchor_right = 1.0
+
+[node name="Player1Health" type="TextureProgressBar" parent="KO-bar Holder"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = 1.0
+offset_top = 3.0
+offset_right = 90.0
+offset_bottom = 11.0
+grow_horizontal = 2
+grow_vertical = 2
+value = 100.0
+nine_patch_stretch = true
+texture_under = ExtResource("9")
+texture_progress = ExtResource("9")
+tint_under = Color(0.901961, 0.0117647, 0.0117647, 1)
+tint_progress = Color(0.941176, 0.752941, 0, 1)
+
+[node name="Player2Health" type="TextureProgressBar" parent="KO-bar Holder"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 105.0
+offset_top = 3.0
+offset_right = 193.0
+offset_bottom = 11.0
+grow_horizontal = 2
+grow_vertical = 2
+value = 100.0
+fill_mode = 1
+nine_patch_stretch = true
+texture_under = ExtResource("9")
+texture_progress = ExtResource("9")
+tint_under = Color(0.901961, 0.0117647, 0.0117647, 1)
+tint_progress = Color(0.941176, 0.752941, 0, 1)
+
+[node name="KO-BAR" type="TextureRect" parent="KO-bar Holder"]
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+texture = ExtResource("8")
+stretch_mode = 1
+
+[node name="Time Holder" type="Control" parent="."]
+anchors_preset = 0
+
+[node name="10s" type="TextureRect" parent="Time Holder"]
+layout_mode = 0
+offset_left = 87.0
+offset_top = 16.0
+offset_right = 95.0
+offset_bottom = 28.0
+texture = ExtResource("14")
+stretch_mode = 1
+
+[node name="1s" type="TextureRect" parent="Time Holder"]
+layout_mode = 0
+offset_left = 96.0
+offset_top = 16.0
+offset_right = 104.0
+offset_bottom = 28.0
+texture = ExtResource("14")
+stretch_mode = 1
+
+[node name="Timer" type="Timer" parent="Time Holder"]
+autostart = true
+
+[node name="Names" type="Control" parent="."]
+anchors_preset = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="Player Name 1" type="TextureRect" parent="Names"]
+layout_mode = 0
+offset_left = -1.0
+offset_top = 15.0
+offset_right = 55.0
+offset_bottom = 23.0
+texture = ExtResource("11")
+stretch_mode = 5
+
+[node name="Player Name 2" type="TextureRect" parent="Names"]
+layout_mode = 0
+offset_left = 126.0
+offset_top = 13.0
+offset_right = 194.0
+offset_bottom = 26.0
+texture = ExtResource("13")
+expand_mode = 1
+stretch_mode = 5
+
+[connection signal="timeout" from="Time Holder/Timer" to="." method="_on_Timer_timeout"]
